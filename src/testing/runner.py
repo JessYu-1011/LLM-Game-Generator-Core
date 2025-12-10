@@ -2,9 +2,10 @@ import ast
 import subprocess
 import sys
 
-def static_code_check(file_path):
+def static_code_check(file_path: str) -> tuple[bool, str]:
     """
-    使用 Python 的 ast 模組進行靜態語法檢查。
+    Use Python ast module, inspecting the syntax errors.
+    @:return (syntax validity, error message)
     """
     try:
         with open(file_path, "r", encoding="utf-8") as f:
@@ -16,9 +17,9 @@ def static_code_check(file_path):
     except Exception as e:
         return False, f"其他錯誤 ❌: {e}"
 
-def launch_game(file_path):
+def launch_game(file_path: str) -> str:
     """
-    嘗試執行生成的遊戲檔案
+    Try to launch the generated game file.
     """
     try:
         if sys.platform == "win32":

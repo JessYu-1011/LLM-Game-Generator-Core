@@ -1,5 +1,5 @@
 # Reviewer / Fixer Prompt
-FIXER_PROMPT = """
+FIXER_PROMPT: str = """
 You are a Python Expert and QA Engineer.
 I tried to run a Pygame script, but it crashed.
 
@@ -14,10 +14,10 @@ I tried to run a Pygame script, but it crashed.
 2. Fix the error (e.g., missing imports, undefined variables, logic errors).
 3. Output the FULL, CORRECTED code.
 4. Ensure the code still follows the structure:
-   - import pygame
-   - pygame.init()
-   - Game Loop
-   - if __name__ == "__main__":
+    - import pygame
+    - pygame.init()
+    - Game Loop
+    - if __name__ == "__main__":
 
 Return the fixed code inside a ```python ... ``` block.
 """

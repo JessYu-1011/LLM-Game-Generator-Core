@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <title>AI Pygame Generator</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body class="p-4">
+<div class="container">
+  <h1>🎮 ChatDev: Pygame 自動生成工廠 (Flask Ver.)</h1>
+  <hr>
+
+  <!-- 顯示 Flash 訊息 -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} mt-2">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="post">
+    <div class="mb-3">
+      <label>LLM Provider</label>
+      <select name="provider" class="form-select">
+        {% for p in providers %}
+        <option value="{{ p }}">{{ p.upper() }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label>遊戲想法</label>
+      <textarea name="user_input" class="form-control" rows="3"></textarea>
+    </div>
+
+    <button type="submit" name="action" value="generate" class="btn btn-primary">🚀 生成遊戲</button>
+    <button type="submit" name="action" value="launch_game" class="btn btn-success">▶️ 啟動遊戲</button>
+  </form>
+
+  {% if gdd_result %}
+    <hr>
+    <h4>📄 遊戲設計文件 (GDD)</h4>
+    <pre>{{ gdd_result }}</pre>
+  {% endif %}
+
+  {% if file_content %}
+    <hr>
+    <h4>📄 程式碼內容</h4>
+    <pre>{{ file_content }}</pre>
+  {% endif %}
+
+
+</div>
+</body>
+</html>
