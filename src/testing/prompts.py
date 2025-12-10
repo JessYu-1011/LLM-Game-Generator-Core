@@ -22,7 +22,7 @@ I tried to run a Pygame script, but it crashed or had logic errors.
 Return the fixed code inside a ```python ... ``` block.
 """
 
-# 新增：邏輯審查 Prompt
+# Logics inspections
 LOGIC_REVIEW_PROMPT = """
 You are a Senior Game Developer reviewing Pygame code.
 Analyze the following code for LOGIC ERRORS, specifically regarding CONTROLS and MOVEMENT.
@@ -43,4 +43,14 @@ PASS
 
 If there are logic issues (e.g., player cannot move, missing update), output:
 FAIL: [Brief explanation of the error]
+"""
+
+LOGIC_FIXER_PROMPT = """
+You are a Pygame Expert and QA Engineer.
+Help me Fix the codes below, and return the results codes to me.
+【CODE】:
+{code}
+
+【OUTPUT FORMAT】:
+A valid pygame python file
 """

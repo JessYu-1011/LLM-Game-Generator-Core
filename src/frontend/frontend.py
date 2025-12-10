@@ -4,7 +4,8 @@ from config import config
 
 from src.design.chains import run_design_phase
 from src.generation.core import run_core_phase
-from src.testing.runner import static_code_check, launch_game
+from src.testing.runner import launch_game
+from src.testing.fixer import run_fix, static_code_check, run_fix_loop
 
 app = Flask(__name__)
 
@@ -49,21 +50,15 @@ def index():
 
                 # --- Phase 1: Design ---
                 gdd_result_global = run_design_phase(user_input, provider, model_name)
-
                 # --- Phase 2: Core ---
                 game_file_path_global = run_core_phase(gdd_result_global, provider, model_name)
 
                 if game_file_path_global:
                     # --- Phase 3: QA ---
-                    is_valid, message = static_code_check(game_file_path_global)
-                    last_check_message = message
-
-                    if is_valid:
-                        flash("✅ 程式碼生成完成且語法檢查通過！", "success")
-                    else:
-                        flash(f"❌ 靜態檢查失敗: {message}", "danger")
+                    fix_result = run_fix_loop(game_file_path_global, provider, model_name)
                 else:
                     flash("❌ 程式碼生成失敗，未能解析出 Python Block。", "danger")
+
 
             elif action == "launch_game":
                 if game_file_path_global:
