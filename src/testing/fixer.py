@@ -89,37 +89,37 @@ def run_fix_loop(gdd: str, file_path: str, provider: str = "openai",
     error_msg = ""
     while (not game_is_valid) and (max_retries > 0):
         syntax_is_valid, error_msg = static_code_check(file_path)
-        if syntax_is_valid:
-            error_msg = "No error detected"
-            print(f"[Member 3]: ✅ 程式碼生成完成且語法檢查通過！")
-            flash("✅ 程式碼生成完成且語法檢查通過！", "success")
-        else:
-            print(f"[Member 3]: ❌ 靜態檢查失敗: {error_msg}, 正在修理語法")
-            flash(f"❌ 靜態檢查失敗: {error_msg}, 正在修理語法", "danger")
-            new_path, error_msg = run_fix(file_path, error_msg, provider, model, "syntax")
+        if not syntax_is_valid:
+            flash(f"❌ 語法錯誤: {error_msg}", "danger")
+            print(f"[Member3]: ❌ 語法錯誤: {error_msg}")
+            file_path, error_msg = run_fix(file_path, error_msg, provider, model, "syntax")
+            max_retries -= 1
+            continue
+        print(f"[Member3]: ✅ 語法正確")
 
         logic_is_valid, error_msg = game_logic_check(gdd, file_path, provider, model)
-        if logic_is_valid:
-            error_msg = "No error detected"
-            print(f"[Member 3]: ✅ 程式碼生成完成且邏輯檢查通過！")
-            flash("✅ 程式碼生成完成且邏輯檢查通過！", "success")
-        else:
-            print(f"[Member 3]: ❌ 邏輯檢查失敗: {error_msg}, 正在修理邏輯")
-            flash(f"❌ 邏輯檢查失敗: {error_msg}, 正在修理邏輯", "danger")
-            new_path, error_msg = run_fix(file_path, error_msg, provider, model, "logic")
+        if not logic_is_valid:
+            flash(f"❌ 邏輯錯誤: {error_msg}", "danger")
+            print(f"[Member3]: ❌ 邏輯錯誤: {error_msg}")
+            file_path, error_msg = run_fix(file_path, error_msg, provider, model, "logic", gdd)
+            max_retries -= 1
+            continue
+
+        print(f"[Member3]: ✅ 邏輯正確")
+
 
         fuzz_passed, error_msg = run_fuzz_test(file_path, config.FUZZER_RUNNING_TIME)
-        if fuzz_passed:
-            game_is_valid = True
-            error_msg = "No error detected"
-            print(f"[Member 3]: ✅ 程式碼生成完成且 fuzzer 檢查通過！")
-            flash("✅ 程式碼生成完成且 fuzzer 檢查通過！", "success")
-        else:
-            print(f"[Member 3]: ❌ fuzzer 檢查失敗: {error_msg}, 正在修理邏輯")
-            flash(f"❌ fuzzer 檢查失敗: {error_msg}, 正在修理邏輯", "danger")
-            new_path, error_msg = run_fix(file_path, error_msg, provider, model, "logic")
+        if not fuzz_passed:
+            flash(f"❌ 運行時錯誤 (Fuzzer): {error_msg}", "danger")
+            print(f"[Member3]: ❌ 運行時錯誤 (Fuzzer): {error_msg}")
+            file_path, error_msg = run_fix(file_path, error_msg, provider, model, "logic", gdd)
+            max_retries -= 1
+            continue
 
+        print(f"[Member3]: ✅ 運行功能正確")
+
+        game_is_valid = True
+        flash("✅ 程式碼通過驗證", "success")
         max_retries -= 1
 
-    if game_is_valid: return True
-    return False
+    return game_is_valid
